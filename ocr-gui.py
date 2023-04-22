@@ -11,7 +11,7 @@ class OCRApp:
         self.master = master
         self.master.title("Simple OCR Tool")
         self.master.config(bg="#cccccc")
-        self.master.attributes('-alpha', 0.85)
+        self.master.attributes('-alpha', 0.5)
         self.master.geometry("400x120")
 
         # Button to start OCR
@@ -44,7 +44,7 @@ class OCRApp:
 
         if left >= right or upper >= lower:
             print("Invalid window dimensions for capture.")
-            self.master.attributes('-alpha', 0.85)
+            self.master.attributes('-alpha', 0.5)
             return
 
         rect = (left, upper, right, lower)
@@ -56,7 +56,7 @@ class OCRApp:
         self.screenshot = ImageGrab.grab(rect)
 
         # Restore window transparency
-        self.master.attributes('-alpha', 0.85)
+        self.master.attributes('-alpha', 0.5)
         
         # Run OCR on the captured image
         self.captured_text = pytesseract.image_to_string(self.screenshot)
@@ -72,7 +72,6 @@ class OCRApp:
 
         # Copy the extracted text to the clipboard
         pyperclip.copy(self.captured_text)
-
 
 def main():
     root = tk.Tk()
