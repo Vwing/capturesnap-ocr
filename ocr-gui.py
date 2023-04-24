@@ -5,6 +5,11 @@ import pyrect
 import pyperclip
 import tkinter as tk
 import os
+import ctypes
+
+# Hide console window on Windows
+if os.name == 'nt':
+    ctypes.windll.user32.ShowWindow(ctypes.windll.kernel32.GetConsoleWindow(), 0)
 
 class OCRApp:
     def __init__(self, master):
@@ -13,6 +18,11 @@ class OCRApp:
         self.master.config(bg="#cccccc")
         self.master.attributes('-alpha', 0.5)
         self.master.geometry("400x120")
+        self.master.attributes("-topmost", 1)
+
+        # Bind mouse events to move the GUI
+        self.master.bind('<Button-1>', self.start_move)
+        self.master.bind('<B1-Motion>', self.on_move)
 
         # Button to start OCR
         self.start_button = tk.Button(self.master, text="Capture OCR", command=self.capture_and_ocr, bg="#eeeeee")
@@ -35,25 +45,13 @@ class OCRApp:
         right = left + width
         lower = upper + height
 
-        screen_width = self.master.winfo_screenwidth()
-        screen_height = self.master.winfo_screenheight()
-
-        # Ensure the bounding box is within the screen dimensions
-        left, upper = max(0, left), max(0, upper)
-        right, lower = min(screen_width, right), min(screen_height, lower)
-
-        if left >= right or upper >= lower:
-            print("Invalid window dimensions for capture.")
-            self.master.attributes('-alpha', 0.5)
-            return
-
         rect = (left, upper, right, lower)
 
         # Make the window fully transparent during capture
         self.master.attributes('-alpha', 0.0)
         
-        # Capture the screen within the window's rectangle
-        self.screenshot = ImageGrab.grab(rect)
+        # Capture the screen within the window's rectangle, considering all monitors
+        self.screenshot = ImageGrab.grab(rect, all_screens=True)
 
         # Restore window transparency
         self.master.attributes('-alpha', 0.5)
@@ -72,7 +70,18 @@ class OCRApp:
 
         # Copy the extracted text to the clipboard
         pyperclip.copy(self.captured_text)
+        
+    def start_move(self, event):
+        self.master.x = event.x
+        self.master.y = event.y
 
+    def on_move(self, event):
+        deltax = event.x - self.master.x
+        deltay = event.y - self.master.y
+        x = self.master.winfo_x() + deltax
+        y = self.master.winfo_y() + deltay
+        self.master.geometry(f"+{x}+{y}")
+        
 def main():
     root = tk.Tk()
     app = OCRApp(root)
