@@ -14,7 +14,7 @@ if os.name == 'nt':
 class OCRApp:
     def __init__(self, master):
         self.master = master
-        self.master.title("Simple OCR Tool")
+        self.master.title("CaptureSnap OCR")
         self.master.config(bg="#cccccc")
         self.master.attributes('-alpha', 0.5)
         self.master.geometry("400x120")
