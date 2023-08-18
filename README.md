@@ -56,3 +56,4 @@ For more information, questions or feedback, please feel free to open an issue o
 
 Please enjoy CaptureSnap OCR and let us know of any way we can improve your text capturing experience!
 
+
