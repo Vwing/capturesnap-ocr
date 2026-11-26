@@ -12,6 +12,7 @@ CaptureSnap OCR is a simple tool designed to easily capture and extract text fro
 - OCR text capture from any part of the screen.
 - Text from captured region is automatically copied to the clipboard.
 - The last captured image and extracted text are saved to a .png and .txt file respectively.
+- Choose between two OCR engines: Tesseract or the [MiniCPM-OCR 1.0](https://huggingface.co/openbmb/MiniCPM-OCR-1.0-gguf) vision model.
 
 ## Installation & Dependencies
 
@@ -42,9 +43,34 @@ python3 capturesnap_ocr.py
 
 2. A transparent window will appear. Move and resize this window to overlay the text you want to capture.
 
-3. Click the "Capture OCR" button at the top of the window. The text within the area will be captured, processed by OCR, and copied to your clipboard.
+3. Pick an OCR engine from the dropdown next to the button. The app remembers your choice.
 
-4. You can find the screenshot and the extracted text as `screenshot.png` and `captured_text.txt` in the same directory as your script.
+4. Click the "Capture OCR" button at the top of the window. The text within the area will be captured, processed by OCR, and copied to your clipboard.
+
+5. You can find the screenshot and the extracted text as `screenshot.png` and `captured_text.txt` in the same directory as your script.
+
+## OCR Engines
+
+- **Tesseract**: fast and lightweight. It needs the Tesseract OCR software installed (see above).
+- **MiniCPM-OCR**: a 1.3B-parameter vision-language OCR model. It is more accurate than Tesseract on small screen fonts, code indentation, and mixed English and Chinese text. It runs locally through [llama.cpp](https://github.com/ggml-org/llama.cpp)'s `llama-server`, on the GPU when one is available. It uses about 2 GB of video memory, and a capture takes well under a second on a modern GPU.
+
+The model loads when you select MiniCPM-OCR, or when the app starts if MiniCPM-OCR was the engine you last used. It stays loaded until you close the window, even if you switch back to Tesseract. The status text next to the dropdown shows loading progress. If you capture before the model is ready, the text is read as soon as loading finishes. After the first run, loading takes a few seconds. The very first load can take up to a minute while the GPU driver compiles shaders.
+
+The first time you select MiniCPM-OCR, the app downloads everything it needs into its own folder:
+
+- `models/MiniCPM-OCR-1.0-gguf/`: the Q8_0 model and its vision projector (about 1.7 GB).
+- `llama.cpp/`: the Windows Vulkan build of llama.cpp (about 37 MB), which runs on NVIDIA, AMD and Intel GPUs and falls back to the CPU. Not downloaded on Linux or macOS: install llama.cpp yourself and put `llama-server` on your PATH.
+
+Interrupted downloads resume the next time you try. Server output is written to `llama-server.log`.
+
+To use a different llama.cpp build, such as a CUDA build, set `llama_server_path` in `settings.json`:
+
+```json
+{
+  "engine": "minicpm",
+  "llama_server_path": "C:\\path\\to\\llama.cpp\\llama-server.exe"
+}
+```
 
 ## License
 
