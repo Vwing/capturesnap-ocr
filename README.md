@@ -4,6 +4,8 @@
 
 CaptureSnap OCR is a simple tool designed to easily capture and extract text from your screen. It works by overlaying a resizable transparent window on your screen, which you can move and scale over the text you want to capture. The text within the designated area can then be captured and processed via OCR (Optical Character Recognition), and is instantly copied to your clipboard.
 
+![image](https://github.com/Vwing/capturesnap-ocr/assets/9121881/0268693a-ad0d-4aa4-9b1b-dd32800c795c)
+
 ## Features
 
 - A simple, user-friendly, and resizable GUI.
